@@ -31,6 +31,8 @@
 
 2. IDE에서 프로젝트를 열거나 터미널에서 프로젝트 디렉터리로 이동합니다.
 3. `./gradlew bootRun` 명령을 사용하여 애플리케이션을 실행합니다.
+> jar 파일을 다운받은 경우 java -jar kakaobank-0.0.1-SNAPSHOT.jar (다운받아서 설정한 jar 파일명) 를 통해 실행하실 수 있습니다.
+4. 실행 포트는 8081 입니ㅏ. (ex: localhost:8081) 
 
 ### API 문서
  -  API 문서 명세는 Swagger를 사용하여 제공합니다.
