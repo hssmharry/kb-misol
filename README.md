@@ -26,6 +26,9 @@
 ### 실행 방법
 
 1. 프로젝트를 다운로드 (git clone) 합니다.
+> 혹은 jar 파일을 다운로드 합니다.
+> 구글 드라이브 : https://drive.google.com/file/d/1FZ5UVUv4LVkssLskFTv3MWMCHaQXDYtU/view?usp=sharing
+
 2. IDE에서 프로젝트를 열거나 터미널에서 프로젝트 디렉터리로 이동합니다.
 3. `./gradlew bootRun` 명령을 사용하여 애플리케이션을 실행합니다.
 
@@ -38,6 +41,8 @@
 > 검색어 입력 후 검색 버튼 클릭 시 검색 결과를 확인할 수 있습니다. (인풋박스에서 엔터로 검색 가능)
 > 실시간 (1초 단위)로 검색어 순위를 확인할 수 있습니다.
  -  애플리케이션 실행 후 `http://localhost:8081/main.html` 로 접속해서 확인 가능합니다.
+ > http://44.203.69.233:8081/main.html : 간단한 테스트 페이지
+ > http://44.203.69.233:8081/swagger-ui/index.html : API 명세 확인
 
 ## 3. 요구사항
 1. 블로그 검색
