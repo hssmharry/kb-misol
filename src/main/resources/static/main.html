@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <title>미솔's 카카오뱅크 과제 - 검색 테스트 페이지</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .search-container {
+            margin-top: 50px;
+        }
+
+        #result-container {
+            margin-top: 50px;
+        }
+
+        .result-row {
+            border: 1px solid #000;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        .result-row .content {
+            margin-top:3px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="flex-column">
+        <div class="col-md-12 d-flex justify-content-center">
+            <div class="additional-content">
+                <h2>실시간 인기검색어 (1초마다 갱신됩니다.)</h2>
+                <ol id="popular-list"></ol>
+            </div>
+        </div>
+    </div>
+    <div class="flex-column justify-content-center">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col">
+                    <div class="search-container">
+                        <select id="sorting-type">
+                            <option selected value="RECENCY">최신순</option>
+                            <option value="ACCURACY">정확도순</option>
+                        </select>
+                        <label>페이지 사이즈 : </label> <input type="number" id="page-size" value="10" min="1" max="100">
+                        <input id="search-input" type="text" class="form-control" placeholder="검색어를 입력하세요"
+                               aria-label="Search"
+                               aria-describedby="search-button">
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="search-container">
+                        <button class="btn btn-primary" type="submit" id="search-button">검색</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="result-container" class="col-md-7">
+            <!-- 결과 표시 영역 -->
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+
+    $('#search-input').keydown((e) => {
+        if (e.keyCode === 13) {
+            $('#search-button').click();
+        }
+    });
+
+    $('#search-button').click(() => search());
+
+    function clickPage(e) {
+        let page = $(e).data('page');
+        search(page);
+    }
+
+    function search(inPage) {
+        let size = $('#page-size').val();
+        let page = inPage == null ? 1 : inPage;
+        $.ajax({
+            url: `/api/blogs?keyword=${$('#search-input').val()}&sortingType=${$('#sorting-type').val()}&size=${size}&page=${page}`,
+            method: 'GET',
+            success: function (data) {
+                console.log(data);
+                let contents = data.content;
+                let result = '';
+                contents.forEach(v => {
+                    result += `
+                        <div class="result-row">
+                            <div class="title"><b><a href="${v.url}">${v.title}</a></b></div>
+                            <div class="dateTime">${v.createdAt}</div>
+                            <div class="content">${v.contents.replace(/<[^>]*>?/g, '')}</div>
+                        </div>`;
+                });
+                $('#result-container').empty();
+                $('#result-container').html(result);
+
+                // 여기는 페이지네이션 처리
+                var start = data.number < 3 ? 1 : data.number - 2;
+                var pages = data.totalPages - start > 4 ? start + 4 : data.totalPages;
+                $('.pagination').empty();
+                for (let i = start; i <= pages; i++) {
+                    $('.pagination').append(`<li class="page-item"><a href="#" onclick="clickPage(this);" class="page-link" data-page="${i}">${i}</a></li>`);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert(xhr.responseJSON.message);
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    // 인기검색어.. 1초마다 갱신
+    setInterval(() => {
+        $.ajax({
+            url: '/api/blogs/popular',
+            method: 'GET',
+            success: function (response) {
+                let result = '';
+                response.forEach(v => {
+                    result += `<li>${v.keyword} - ${v.count}회</li>`;
+                });
+                $('#popular-list').empty();
+                $('#popular-list').html(result);
+            },
+            error: function (xhr, status, error) {
+                console.error('인기검색어 요청 실패:', status, error);
+                alert(xhr.responseJSON.message);
+            }
+        });
+    }, 1000);
+</script>
+</body>
+</html>

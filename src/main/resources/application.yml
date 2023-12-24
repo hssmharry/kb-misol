@@ -1,0 +1,33 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+logging:
+  level:
+    root: debug
+
+external:
+  kakao:
+    default-url: https://dapi.kakao.com
+    search: /v2/search/blog
+    key: aff992768330b03a2195be240c98fde9
+  naver:
+    default-url: https://openapi.naver.com
+    search: /v1/search/blog.json
+    clientId: jnmKunrse1jKULHI2jMZ
+    clientSecret: rqAuFVH4wG
+
+
